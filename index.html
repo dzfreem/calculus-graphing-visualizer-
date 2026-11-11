@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Calculus & Graphing Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <h2>Function Plotter</h2>
+            <div class="control-group">
+                <label for="function-input">f(x) =</label>
+                <input type="text" id="function-input" value="x^2 - 4" placeholder="e.g., sin(x) * x">
+            </div>
+            <button id="reset-view-btn">Reset Viewport</button>
+            <div class="readout">
+                <p id="cursor-coords">Cursor: (0.00, 0.00)</p>
+            </div>
+        </aside>
+        <main class="canvas-wrapper">
+            <canvas id="graph-canvas"></canvas>
+        </main>
+    </div>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
