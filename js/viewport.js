@@ -5,6 +5,8 @@ export class Viewport {
         this.scale = 50; // Pixels per 1 mathematical unit
         this.offsetX = 0; // Origin shift in pixels
         this.offsetY = 0;
+        this.minScale = 5;
+        this.maxScale = 500;
     }
 
     resize() {
@@ -19,6 +21,24 @@ export class Viewport {
         this.scale = 50;
         this.offsetX = this.canvas.width / 2;
         this.offsetY = this.canvas.height / 2;
+    }
+
+    // Shift origin offsets by pixel drag distance
+    pan(dx, dy) {
+        this.offsetX += dx;
+        this.offsetY += dy;
+    }
+
+    // Zoom while keeping the math coordinate under (mouseX, mouseY) stationary
+    zoomAt(mouseX, mouseY, zoomFactor) {
+        const mathX = this.toMathX(mouseX);
+        const mathY = this.toMathY(mouseY);
+
+        const newScale = Math.min(this.maxScale, Math.max(this.minScale, this.scale * zoomFactor));
+        this.scale = newScale;
+
+        this.offsetX = mouseX - (mathX * this.scale);
+        this.offsetY = mouseY + (mathY * this.scale);
     }
 
     // Convert math X to screen pixel X
@@ -53,6 +73,9 @@ export class Viewport {
         ctx.fillStyle = '#64748b';
         ctx.font = '12px sans0serif';
 
+        // Clamp label positions so numbers stick to screen edges if axes pan off-screen
+        
+        
         // Vertical Grid Lines & X-Axis Labels
         const startX = Math.floor(this.toMathX(0));
         const endX = Math.ceil(this.toMathX(canvas.width));
