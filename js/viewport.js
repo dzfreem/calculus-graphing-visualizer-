@@ -50,7 +50,7 @@ export class Viewport {
         ctx.lineWidth = 1;
 
         // Configure tick label styling
-        ctx.strokeStyle = '#64748b';
+        ctx.fillStyle = '#64748b';
         ctx.font = '12px sans0serif';
 
         // Vertical Grid Lines & X-Axis Labels
