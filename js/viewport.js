@@ -49,24 +49,50 @@ export class Viewport {
         ctx.strokeStyle = '#e2e8f0';
         ctx.lineWidth = 1;
 
+        // Configure tick label styling
+        ctx.strokeStyle = '#64748b';
+        ctx.font = '12px sans0serif';
+
+        // Vertical Grid Lines & X-Axis Labels
         const startX = Math.floor(this.toMathX(0));
         const endX = Math.ceil(this.toMathX(canvas.width));
+        ctx.textAlign = 'center';
+
         for (let x = startX; x <= endX; x++) {
             const px = this.toScreenX(x);
+
+            // Draw Vertical grid line
             ctx.beginPath();
             ctx.moveTo(px, 0);
             ctx.lineTo(px, canvas.height);
             ctx.stroke();
+
+            // Draw X-axis number (skip 0 to prevent overlap at origin)
+            if (x !== 0) {
+                // Position at px horizontally, and 16 pixels below the X-axis line
+                ctx.fillText(x.toString(), px, this.offsetY + 16);
+            }
         }
 
+        // Horizontal Grid Lines & Y-Axis Labels
         const startY = Math.floor(this.toMathY(canvas.height));
         const endY = Math.ceil(this.toMathY(0));
+        ctx.textAlign = 'right';
+
         for (let y = startY; y <= endY; y++) {
             const py = this.toScreenY(y);
+        
+            // Draw horizontal grid line
             ctx.beginPath();
             ctx.moveTo(0, py);
             ctx.lineTo(canvas.width, py);
             ctx.stroke();
+
+            // Draw Y-axis number (skipping 0 as with X-axis)
+            if (y !== 0) {
+                // Position 8 pixels to the left of the Y-axis line, and 4 pixels down to vertically center the font
+                ctx.fillText(y.toString(), this.offsetX - 8, py + 4);
+            }
         }
 
         // Draw primary X and Y axes
