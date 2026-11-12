@@ -74,7 +74,8 @@ export class Viewport {
         ctx.font = '12px sans0serif';
 
         // Clamp label positions so numbers stick to screen edges if axes pan off-screen
-        
+        const labelY = Math.min(Math.max(this.offsetY + 16, 16), canvas.height - 8);
+        const labelX = Math.min(Math.max(this.offsetX - 8, 28), canvas.width -8);
         
         // Vertical Grid Lines & X-Axis Labels
         const startX = Math.floor(this.toMathX(0));

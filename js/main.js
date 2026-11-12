@@ -32,6 +32,14 @@ canvas.addEventListener('mousedown', (e) => {
     canvas.style.cursor = 'grabbing';
 });
 
+// Testing touchpad event listener
+canvas.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+    canvas.style.cursor = 'grabbing';
+});
+
 // Stop Dragging
 canvas.addEventListener('mouseup', () => {
     if (isDragging) {
@@ -72,7 +80,7 @@ canvas.addEventListener('wheel', (e) => {
     const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
     viewport.zoomAt(mouseX, mouseY, zoomFactor);
     render();
-}, {passive: false});
+}, { passive: false});
 
 // Initialize canvas on load
 viewport.resize();
