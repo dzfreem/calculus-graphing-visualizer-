@@ -1,4 +1,9 @@
 import { Viewport } from './viewport.js';
+import { MathParser } from './parser.js';
+
+// Testing parser
+const parser = new MathParser();
+console.log(parser.tokenize("2 * x^2 + sin(x)"));
 
 const canvas = document.getElementById('graph-canvas');
 const viewport = new Viewport(canvas);
