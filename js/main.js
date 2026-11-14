@@ -1,21 +1,46 @@
 import { Viewport } from './viewport.js';
 import { MathParser } from './parser.js';
-
-const parser = new MathParser();
+import { drawCurve } from './plotter.js';
 
 const canvas = document.getElementById('graph-canvas');
 const viewport = new Viewport(canvas);
+const parser = new MathParser();
+
+const functionInput = document.getElementById('function-input');
 const resetBtn = document.getElementById('reset-view-btn');
 const coordsReadout = document.getElementById('cursor-coords');
 
+let currentFn = null;
 // Mouse state
 let isDragging = false;
 let lastMouseX = 0;
 let lastMouseY = 0;
 
+function updateFunction() {
+    const expression = functionInput.value.trim();
+    if (!expression) {
+        currentFn = null;
+        functionInput.style.borderColor = '#475569'
+        render();
+        return;
+    }
+
+    try {
+        currentFn = parser.compile(expression);
+        functionInput.style.borderColor = '#475569';
+    } catch (err) {
+        // keep the last valid curve or clear it, and highlight input red on syntax error.
+        functionInput.style.borderColor = '#ef4444';
+    }
+    render();
+}
+
 function render() {
     viewport.drawGrid();
+    drawCurve(viewport.ctx, viewport, currentFn);
 }
+
+functionInput.addEventListener('input', updateFunction);
 
 window.addEventListener('resize', () => {
     viewport.resize();
@@ -32,14 +57,7 @@ canvas.addEventListener('mousedown', (e) => {
     isDragging = true;
     lastMouseX = e.clientX;
     lastMouseY = e.clientY;
-    canvas.style.cursor = 'grabbing';
-});
-
-// Testing touchpad event listener
-canvas.addEventListener('pointerdown', (e) => {
-    isDragging = true;
-    lastMouseX = e.clientX;
-    lastMouseY = e.clientY;
+    canvas.setPointerCapture(e.pointerId);
     canvas.style.cursor = 'grabbing';
 });
 
@@ -47,6 +65,7 @@ canvas.addEventListener('pointerdown', (e) => {
 canvas.addEventListener('mouseup', () => {
     if (isDragging) {
         isDragging = false;
+        canvas.releasePointerCapture(e.pointerId);
         canvas.style.cursor = 'crosshair';
     }
 });
@@ -87,4 +106,4 @@ canvas.addEventListener('wheel', (e) => {
 
 // Initialize canvas on load
 viewport.resize();
-render();
+updateFunction();

@@ -7,7 +7,7 @@ export class MathParser {
             '/': { precedence: 3, associativity: 'Left'},
             '^': { precedence: 4, associativity: 'Right'}
         };
-        this.functions = new Set(['sin', 'cos', 'tan0', 'sqrt', 'abs', 'ln', 'log']);
+        this.functions = new Set(['sin', 'cos', 'tan', 'sqrt', 'abs', 'ln', 'log']);
     }
 
     // Stage 1: Break string into clean tokens
