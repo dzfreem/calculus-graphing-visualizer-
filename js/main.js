@@ -1,6 +1,7 @@
 import { Viewport } from './viewport.js';
 import { MathParser } from './parser.js';
-import { drawCurve } from './plotter.js';
+import { drawCurve, drawTangentLine } from './plotter.js';
+import { numericalDerivative } from './calculus.js';
 
 const canvas = document.getElementById('graph-canvas');
 const viewport = new Viewport(canvas);
@@ -9,8 +10,11 @@ const parser = new MathParser();
 const functionInput = document.getElementById('function-input');
 const resetBtn = document.getElementById('reset-view-btn');
 const coordsReadout = document.getElementById('cursor-coords');
+const tangentToggle = document.getElementById('tangent-toggle');
+const derivativeReadout = document.getElementById('derivative-readout')
 
 let currentFn = null;
+let hoverMathX = null;
 // Mouse state
 let isDragging = false;
 let lastMouseX = 0;
@@ -38,9 +42,22 @@ function updateFunction() {
 function render() {
     viewport.drawGrid();
     drawCurve(viewport.ctx, viewport, currentFn);
+
+    if (currentFn && tangentToggle.checked && hoverMathX !== null) {
+        const slope = numericalDerivative(currentFn, hoverMathX);
+        if (Number.isFinite(slope)) {
+            drawTangentLine(viewport.ctx, viewport, currentFn, hoverMathX, slope);
+            derivativeReadout.textContent = `f'(${hoverMathX.toFixed(2)}) = ${slope.toFixed(4)}`;
+        } else {
+            derivativeReadout.textContent = `f'(${hoverMathX.toFixed(2)}) = Undefined`;
+        }
+    } else {
+        derivativeReadout.textContent = `f'(x) = --`;
+    }
 }
 
 functionInput.addEventListener('input', updateFunction);
+tangentToggle.addEventListener('change', render);
 
 window.addEventListener('resize', () => {
     viewport.resize();
@@ -62,7 +79,7 @@ canvas.addEventListener('mousedown', (e) => {
 });
 
 // Stop Dragging
-canvas.addEventListener('mouseup', () => {
+canvas.addEventListener('mouseup', (e) => {
     if (isDragging) {
         isDragging = false;
         canvas.releasePointerCapture(e.pointerId);
@@ -83,12 +100,13 @@ canvas.addEventListener('mousemove', (e) => {
         lastMouseY = e.clientY;
 
         viewport.pan(dx, dy);
-        render();
     }
 
-    const mathX = viewport.toMathX(mouseX).toFixed(2);
-    const mathY = viewport.toMathY(mouseY).toFixed(2);
-    coordsReadout.textContent = `Cursor: (${mathX}, ${mathY})`;
+    hoverMathX = viewport.toMathX(mouseX);
+    const mathY = viewport.toMathY(mouseY);
+    coordsReadout.textContent = `Cursor: (${hoverMathX.toFixed(2)}, ${mathY.toFixed(2)})`;
+
+    render();
 });
 
 // Handle cursor-anchored zooming
