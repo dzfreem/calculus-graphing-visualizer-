@@ -26,6 +26,37 @@
             <div class="readout">
                 <p id="derivative-readout">f'(x) = --</p>
             </div>
+                        <hr style="border-color: #334155;">
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="integral-toggle"> Show Riemann Sum
+                </label>
+            </div>
+            <div class="control-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                <div>
+                    <label for="bound-a">a</label>
+                    <input type="number" id="bound-a" value="0" step="0.5" style="width: 100%;">
+                </div>
+                <div>
+                    <label for="bound-b">b</label>
+                    <input type="number" id="bound-b" value="2" step="0.5" style="width: 100%;">
+                </div>
+                <div>
+                    <label for="subintervals-n">n</label>
+                    <input type="number" id="subintervals-n" value="10" min="1" max="500" style="width: 100%;">
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="riemann-rule">Rule</label>
+                <select id="riemann-rule" style="padding: 8px; border-radius: 4px; background: #0f172a; color: #fff; border: 1px solid #475569;">
+                    <option value="midpoint">Midpoint Rule</option>
+                    <option value="left">Left Endpoint</option>
+                    <option value="right">Right Endpoint</option>
+                </select>
+            </div>
+            <div class="readout">
+                <p id="integral-readout">Area ≈ --</p>
+            </div>
         </aside>
         <main class="canvas-wrapper">
             <canvas id="graph-canvas"></canvas>

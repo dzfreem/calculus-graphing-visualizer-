@@ -1,7 +1,7 @@
 import { Viewport } from './viewport.js';
 import { MathParser } from './parser.js';
-import { drawCurve, drawTangentLine } from './plotter.js';
-import { numericalDerivative } from './calculus.js';
+import { drawCurve, drawTangentLine, drawRiemannRectangles } from './plotter.js';
+import { numericalDerivative, riemannSum } from './calculus.js';
 
 const canvas = document.getElementById('graph-canvas');
 const viewport = new Viewport(canvas);
@@ -12,6 +12,13 @@ const resetBtn = document.getElementById('reset-view-btn');
 const coordsReadout = document.getElementById('cursor-coords');
 const tangentToggle = document.getElementById('tangent-toggle');
 const derivativeReadout = document.getElementById('derivative-readout')
+const integralToggle = document.getElementById('integral-toggle');
+const boundAInput = document.getElementById('bound-a');
+const boundBInput = document.getElementById('bound-b');
+const subintervalsInput = document.getElementById('subintervals-n');
+const riemannRuleSelect = document.getElementById('riemann-rule');
+const integralReadout = document.getElementById('integral-readout');
+
 
 let currentFn = null;
 let hoverMathX = null;
@@ -41,6 +48,25 @@ function updateFunction() {
 
 function render() {
     viewport.drawGrid();
+    
+    // Handling integrals
+    if(currentFn && integralToggle.checked){
+        const a = parseFloat(boundAInput.value);
+        const b = parseFloat(boundBInput.value);
+        const n = Math.min(500, Math.max(1, parseInt(subintervalsInput.value, 10) || 1));
+        const rule = riemannRuleSelect.value;
+
+        const { area, rectangles } = riemannSum(currentFn, a, b, n, rule);
+        if (Number.isFinite(area)) {
+            drawRiemannRectangles(viewport.ctx, viewport, rectangles);
+            integralReadout.textContent = `Area ~ ${area.toFixed(5)}`;
+        } else {
+            integralReadout.textContent = `Area ~ Undefined`;
+        }
+    } else {
+        integralReadout.textContent = `Area ~ --`;
+    }
+
     drawCurve(viewport.ctx, viewport, currentFn);
 
     if (currentFn && tangentToggle.checked && hoverMathX !== null) {
@@ -58,6 +84,10 @@ function render() {
 
 functionInput.addEventListener('input', updateFunction);
 tangentToggle.addEventListener('change', render);
+[integralToggle, boundAInput, boundBInput, subintervalsInput, riemannRuleSelect].forEach(el => {
+    el.addEventListener('input', render);
+});
+integralToggle.addEventListener('change', render);
 
 window.addEventListener('resize', () => {
     viewport.resize();

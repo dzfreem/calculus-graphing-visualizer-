@@ -85,3 +85,36 @@ export function drawTangentLine(ctx, viewport, fn, mathX, slope, color = '#ef444
 
     ctx.restore();
 }   
+
+export function drawRiemannRectangles(ctx, viewport, rectangles) {
+    if (!rectangles || rectangles.length === 0) return;
+
+    const zeroY = viewport.toScreenY(0);
+
+    ctx.save();
+    ctx.lineWidth = 1;
+
+    for (const rect of rectangles) {
+        const screenX = viewport.toScreenX(rect.x);
+        const screenNextX = viewport.toScreenX(rect.x + rect.width);
+        const screenY = viewport.toScreenY(rect.height);
+
+        const pixelWidth = screenNextX - screenX;
+        const pixelHeight = zeroY - screenY;
+
+        // Green for positive area, orange for negative area
+        ctx.fillStyle = rect.height >= 0
+            ? 'rgba(16, 185, 129, 0.25)'
+            : 'rgba(249, 115, 22, 0.25)';
+        ctx.strokeStyle = rect.height >= 0
+            ? 'rgba(5, 150, 105, 0.7)'
+            : 'rgba(234, 88, 12, 0.7)';
+
+        ctx.fillRect(screenX, screenY, pixelWidth, pixelHeight);
+        if (Math.abs(pixelWidth) > 2) {
+            ctx.strokeRect(screenX, screenY, pixelWidth, pixelHeight);
+        }
+    }
+
+    ctx.restore();
+}
