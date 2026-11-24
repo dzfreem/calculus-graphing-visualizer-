@@ -5,7 +5,7 @@
 A dependency-free, browser-based function plotter and numerical calculus visualizer built from scratch using HTML5 Canvas and modular ES6 JavaScript.
 
 ## Live Demo
-**[Launch Interactive Visualizer](https://github.io)** *(Update with your GitHub username after enabling Pages)*
+**[Launch Interactive Visualizer](https://dzfreem.github.io/calculus-graphing-visualizer-/)** 
 
 ## Key Features & Technical Highlights
 
