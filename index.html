@@ -13,6 +13,13 @@
             <div class="control-group">
                 <label for="function-input">f(x) =</label>
                 <input type="text" id="function-input" value="x^2 - 4" placeholder="e.g., sin(x) * x">
+                <p id="syntax-error" class="error-text" hidden>Invalid expression syntax</p>
+            </div>
+            <div class="preset-group">
+                <button class="preset-btn" data-fn="x^2 - 4" placeholder="e.g., sin(x) * x">x^2 - 4</button>
+                <button class="preset-btn" data-fn="sin(x) * x">sin(x) * x</button>
+                <button class="preset-btn" data-fn="1 / x">1 / x</button>
+                <button class="preset-btn" data-fn="x^3 - 3*x">x^3 - 3x</button>
             </div>
             <button id="reset-view-btn">Reset Viewport</button>
             <div class="readout">

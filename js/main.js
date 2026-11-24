@@ -18,7 +18,8 @@ const boundBInput = document.getElementById('bound-b');
 const subintervalsInput = document.getElementById('subintervals-n');
 const riemannRuleSelect = document.getElementById('riemann-rule');
 const integralReadout = document.getElementById('integral-readout');
-
+const syntaxError = document.getElementById('syntax-error');
+const presetButtons = document.querySelectorAll('.preset-btn');
 
 let currentFn = null;
 let hoverMathX = null;
@@ -31,7 +32,8 @@ function updateFunction() {
     const expression = functionInput.value.trim();
     if (!expression) {
         currentFn = null;
-        functionInput.style.borderColor = '#475569'
+        functionInput.style.borderColor = '#475569';
+        syntaxError.hidden = true;
         render();
         return;
     }
@@ -39,9 +41,12 @@ function updateFunction() {
     try {
         currentFn = parser.compile(expression);
         functionInput.style.borderColor = '#475569';
+        syntaxError.hidden = true;
     } catch (err) {
         // keep the last valid curve or clear it, and highlight input red on syntax error.
         functionInput.style.borderColor = '#ef4444';
+        syntaxError.textContent = err.message || 'Invalid expression syntax';
+        syntaxError.hidden = false;
     }
     render();
 }
@@ -83,10 +88,20 @@ function render() {
 }
 
 functionInput.addEventListener('input', updateFunction);
+
+presetButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        functionInput.value = btn.dataset.fn;
+        updateFunction();
+    });
+})
+
 tangentToggle.addEventListener('change', render);
+
 [integralToggle, boundAInput, boundBInput, subintervalsInput, riemannRuleSelect].forEach(el => {
     el.addEventListener('input', render);
 });
+
 integralToggle.addEventListener('change', render);
 
 window.addEventListener('resize', () => {
